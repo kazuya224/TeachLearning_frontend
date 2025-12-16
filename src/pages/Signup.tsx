@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { BookOpen, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
+import { signup } from "../api/auth";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +14,7 @@ const SignupPage: React.FC = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const validateEmail = (value: string): boolean => {
     if (!value) {
@@ -60,12 +63,23 @@ const SignupPage: React.FC = () => {
 
     if (!isEmailValid || !isPasswordValid || !isConfirmPasswordValid) return;
 
-    setIsLoading(true);
-    setTimeout(() => {
-      console.log("mock signup", { email, password });
+    try {
+      setIsLoading(true);
+      console.log("リクエスト：", email, password);
+      const res = await signup({ email, password });
+      console.log("レスポンス:", res.responseStatus);
+      if (res.responseStatus === 1) {
+        setSuccessMessage("アカウントを作成しました。");
+        navigate("/login");
+      } else {
+        throw new Error(`Signup failed: responseStatus=${res.responseStatus}`);
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "登録に失敗しました";
+      console.error(msg);
+    } finally {
       setIsLoading(false);
-      setSuccessMessage("アカウントを作成しました（デモ）");
-    }, 1200);
+    }
   };
 
   const handleGoToLogin = () => {

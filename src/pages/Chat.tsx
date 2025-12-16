@@ -1,3 +1,4 @@
+// Chat
 import React from "react";
 import { Send, Sparkles } from "lucide-react";
 import { useApp } from "../contexts/Context";

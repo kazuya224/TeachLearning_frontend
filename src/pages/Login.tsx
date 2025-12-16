@@ -1,3 +1,4 @@
+// login
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Eye, EyeOff, Loader2 } from "lucide-react";
@@ -49,18 +50,19 @@ const LoginPage: React.FC = () => {
 
     try {
       const response = await login({ email, password });
+      if (response.responseStatus === 1) {
+        // トークンとユーザー情報をlocalStorageに保存
+        localStorage.setItem("authToken", response.token);
+        localStorage.setItem("userId", response.userId);
+        localStorage.setItem("userName", response.name);
 
-      // トークンとユーザー情報をlocalStorageに保存
-      localStorage.setItem("authToken", response.token);
-      localStorage.setItem("userId", response.userId);
-      localStorage.setItem("userName", response.name);
+        setSuccessMessage(`ようこそ、${response.name}さん！`);
 
-      setSuccessMessage(`ようこそ、${response.name}さん！`);
-
-      // ダッシュボードへ遷移
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1500);
+        // ダッシュボードへ遷移
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1500);
+      }
     } catch (error) {
       if (error instanceof Error) {
         setErrorMessage(error.message);
