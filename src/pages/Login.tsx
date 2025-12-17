@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
 
         // ダッシュボードへ遷移
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/Home");
         }, 1500);
       }
     } catch (error) {
